@@ -1,3 +1,41 @@
 <resources>
-    <string name="app_name">App!</string>
+    <string name="app_name">Фотошоп 2.0</string>
+    <string name="app_title_styled">Фотошоп 2.0</string>
+
+    <string name="camera_source">Камера</string>
+    <string name="gallery_source">Галерея</string>
+    <string name="save_photo">Зберегти в галерею</string>
+    <string name="share_photo">Поділитися</string>
+    <string name="reset_filters">Скинути</string>
+    <string name="undo">Назад</string>
+    <string name="redo">Вперед</string>
+
+    <string name="tab_filters">Фільтри</string>
+    <string name="tab_crop">Обрізка</string>
+    <string name="tab_transform">Поворот</string>
+    <string name="tab_adjust">Корекція</string>
+
+    <string name="rotate_right">Поворот 90°</string>
+    <string name="rotate_left">Поворот -90°</string>
+    <string name="rotate_180">Поворот 180°</string>
+    <string name="flip_h">Дзеркало Г</string>
+    <string name="flip_v">Дзеркало В</string>
+
+    <string name="crop_free">Вільна</string>
+    <string name="crop_1_1">1:1 Квадрат</string>
+    <string name="crop_4_3">4:3 Фото</string>
+    <string name="crop_16_9">16:9 Відео</string>
+    <string name="crop_9_16">9:16 Stories</string>
+    <string name="crop_3_4">3:4 Портрет</string>
+    <string name="apply_crop">Застосувати</string>
+    <string name="cancel_crop">Скасувати</string>
+
+    <string name="adj_brightness">Яскравість</string>
+    <string name="adj_contrast">Контрастність</string>
+    <string name="adj_saturation">Насиченість</string>
+    <string name="apply_adjustments">Застосувати корекцію</string>
+    <string name="reset_adjustments">Скинути повзунки</string>
+
+    <string name="no_photo_title">Почніть редагування</string>
+    <string name="no_photo_subtitle">Зробіть фото камерою або завантажте з галереї / інтернету</string>
 </resources>

@@ -1,401 +1,737 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
+    android:background="@color/bg_dark"
+    android:orientation="vertical"
+    android:paddingStart="12dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="12dp"
     tools:context=".MainActivity">
 
-    <!-- Top App Bar in AppBarLayout -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <!-- Header App Bar -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
-        app:elevation="0dp">
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Material Design"
-            app:titleTextAppearance="?attr/textAppearanceTitleLarge" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Scrollable content -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="96dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
+            android:layout_weight="1"
+            android:letterSpacing="0.02"
+            android:text="🎨 Фотошоп 2.0"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <!-- Hero / Banner Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/heroCard"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/ic_star"
+            android:backgroundTint="@color/chip_active_bg"
+            android:paddingStart="6dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="2dp"
+            android:text="PRO"
+            android:textColor="@color/primary_light"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <!-- History Actions: Undo / Redo -->
+        <ImageButton
+            android:id="@+id/btnUndo"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/undo"
+            android:enabled="false"
+            android:src="@drawable/ic_undo"
+            app:tint="@color/text_secondary" />
+
+        <ImageButton
+            android:id="@+id/btnRedo"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/redo"
+            android:enabled="false"
+            android:src="@drawable/ic_redo"
+            app:tint="@color/text_secondary" />
+
+        <!-- Share Action -->
+        <ImageButton
+            android:id="@+id/btnShare"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/share_photo"
+            android:enabled="false"
+            android:src="@drawable/ic_share"
+            app:tint="@color/text_secondary" />
+
+        <!-- Reset Action -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReset"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:enabled="false"
+            android:minWidth="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/reset_filters"
+            android:textColor="@color/primary_light"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Photo Display Card Area -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardPreview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/surface_dark"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/border_dark"
+        app:strokeWidth="1.5dp">
+
+        <FrameLayout
+            android:id="@+id/framePhotoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Empty Placeholder State -->
+            <LinearLayout
+                android:id="@+id/layoutPlaceholder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="?attr/colorPrimaryContainer"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_auto_fix"
+                    app:tint="@color/primary_light" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Обзор интерфейса"
-                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                        android:textColor="?attr/colorOnPrimaryContainer"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Современные компоненты Material 3: карточки, текстовые поля, чипы, кнопки и плавающий экшен."
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="?attr/colorOnPrimaryContainer" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/heroActionBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:text="Подробнее"
-                        android:textColor="?attr/colorOnPrimary"
-                        app:cornerRadius="20dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Chips Horizontal Scroll -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Категории"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorOnSurfaceVariant" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clipToPadding="false"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroup"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleLine="true"
-                    app:singleSelection="true">
+                    android:layout_marginTop="16dp"
+                    android:text="@string/no_photo_title"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipAll"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Все" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:maxWidth="280dp"
+                    android:text="@string/no_photo_subtitle"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipFavorites"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Избранное" />
+            <!-- Loaded Image -->
+            <ImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipRecent"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Недавние" />
+            <!-- Interactive Crop Overlay -->
+            <com.example.app.CropOverlayView
+                android:id="@+id/cropOverlayView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipPopular"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Популярные" />
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+            <!-- Crop Confirmation Floating Overlay Bar -->
+            <LinearLayout
+                android:id="@+id/layoutCropActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/ic_star"
+                android:backgroundTint="#D9181B22"
+                android:elevation="6dp"
+                android:orientation="horizontal"
+                android:padding="6dp"
+                android:visibility="gone">
 
-            <!-- Metrics / Stats Cards -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancelCrop"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/cancel_crop"
+                    android:textSize="12sp"
+                    app:cornerRadius="10dp"
+                    app:icon="@drawable/ic_close"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApplyCrop"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:backgroundTint="@color/accent_green"
+                    android:text="@string/apply_crop"
+                    android:textSize="12sp"
+                    app:cornerRadius="10dp"
+                    app:icon="@drawable/ic_check"
+                    app:iconSize="16dp" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tool Categories (Segmented Tabs) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroupCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabFilters"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/tab_filters"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_filter"
+                app:iconSize="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabCrop"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/tab_crop"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_crop"
+                app:iconSize="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabTransform"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/tab_transform"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_rotate"
+                app:iconSize="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tabAdjust"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/tab_adjust"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_tune"
+                app:iconSize="16dp" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+    </HorizontalScrollView>
+
+    <!-- Category Panels Container -->
+    <FrameLayout
+        android:id="@+id/framePanels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:minHeight="54dp">
+
+        <!-- 1. Filters Panel -->
+        <HorizontalScrollView
+            android:id="@+id/panelFilters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleGroupFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterOriginal"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Оригінал"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterGrayscale"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Ч/Б"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterSepia"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Сепія"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterCinematic"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Кіно"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterWarm"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Теплий"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterCool"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Холодний"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterVivid"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Яскравий"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterVintage"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Вінтаж"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterNoir"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Нуар"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterCyberpunk"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Неон"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterDramatic"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Драма"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterVignette"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Віньєтка"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterBlur"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Розмиття"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/filterInvert"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Негатив"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </HorizontalScrollView>
+
+        <!-- 2. Crop Ratios Panel -->
+        <HorizontalScrollView
+            android:id="@+id/panelCrop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleGroupCropRatios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cropFree"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_free"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/crop1_1"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_1_1"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/crop4_3"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_4_3"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/crop16_9"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_16_9"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/crop9_16"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_9_16"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/crop3_4"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/crop_3_4"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </HorizontalScrollView>
+
+        <!-- 3. Transform Panel (Rotate & Flip) -->
+        <HorizontalScrollView
+            android:id="@+id/panelTransform"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRotateRight"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/rotate_right"
+                    android:textSize="12sp"
+                    app:icon="@drawable/ic_rotate_right"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRotateLeft"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/rotate_left"
+                    android:textSize="12sp"
+                    app:icon="@drawable/ic_rotate_left"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFlipH"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/flip_h"
+                    android:textSize="12sp"
+                    app:icon="@drawable/ic_flip"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFlipV"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="@string/flip_v"
+                    android:textSize="12sp"
+                    app:icon="@drawable/ic_flip_vertical"
+                    app:iconSize="16dp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- 4. Adjustments Panel (Sliders) -->
+        <LinearLayout
+            android:id="@+id/panelAdjust"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_star"
+            android:backgroundTint="@color/surface_elevated"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <!-- Brightness -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:baselineAligned="false"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.Material3.CardView.Filled"
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/adj_brightness"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderBrightness"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:cardCornerRadius="16dp">
+                    android:value="0.0"
+                    android:valueFrom="-80.0"
+                    android:valueTo="80.0"
+                    app:thumbColor="@color/primary"
+                    app:trackColorActive="@color/primary"
+                    app:trackColorInactive="@color/border_dark" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="84%"
-                            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                            android:textColor="?attr/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Готовность"
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.Material3.CardView.Filled"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tvBrightnessVal"
+                    android:layout_width="36dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-                    app:cardCornerRadius="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="+12"
-                            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                            android:textColor="?attr/colorTertiary"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Новые элементы"
-                            android:textAppearance="?attr/textAppearanceLabelMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                    android:gravity="end"
+                    android:text="0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- Form / Input Card -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.Material3.CardView.Outlined"
+            <!-- Contrast -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:text="@string/adj_contrast"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Быстрый ввод"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="?attr/colorOnSurface" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderContrast"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:value="1.0"
+                    android:valueFrom="0.5"
+                    android:valueTo="2.0"
+                    app:thumbColor="@color/accent_cyan"
+                    app:trackColorActive="@color/accent_cyan"
+                    app:trackColorInactive="@color/border_dark" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputLayout"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:hint="Название задачи"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:helperText="Введите краткое описание">
+                <TextView
+                    android:id="@+id/tvContrastVal"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="1.0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/textInputEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Button actions -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnSubmit"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="6dp"
-                            android:layout_weight="1"
-                            android:text="Сохранить"
-                            app:cornerRadius="12dp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCancel"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:layout_weight="1"
-                            android:text="Сброс"
-                            app:cornerRadius="12dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Preferences / Settings Card -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.Material3.CardView.Outlined"
+            <!-- Saturation -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="20dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:text="@string/adj_saturation"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="Настройки"
-                        android:textAppearance="?attr/textAppearanceTitleMedium"
-                        android:textColor="?attr/colorOnSurface" />
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderSaturation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:value="1.0"
+                    android:valueFrom="0.0"
+                    android:valueTo="2.0"
+                    app:thumbColor="@color/primary_light"
+                    app:trackColorActive="@color/primary_light"
+                    app:trackColorInactive="@color/border_dark" />
 
-                    <!-- Option 1: Notifications -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingVertical="8dp">
+                <TextView
+                    android:id="@+id/tvSaturationVal"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="1.0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="end"
+                android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Уведомления"
-                                android:textAppearance="?attr/textAppearanceBodyLarge"
-                                android:textColor="?attr/colorOnSurface" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnResetAdjust"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/reset_adjustments"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Получать системные оповещения"
-                                android:textAppearance="?attr/textAppearanceBodySmall"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchNotifications"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
-                    </LinearLayout>
-
-                    <com.google.android.material.divider.MaterialDivider
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="6dp" />
-
-                    <!-- Option 2: Auto-sync -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingVertical="8dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Автосинхронизация"
-                                android:textAppearance="?attr/textAppearanceBodyLarge"
-                                android:textColor="?attr/colorOnSurface" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Синхронизировать данные в фоне"
-                                android:textAppearance="?attr/textAppearanceBodySmall"
-                                android:textColor="?attr/colorOnSurfaceVariant" />
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchSync"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApplyAdjust"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/primary"
+                    android:text="@string/apply_adjustments"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
 
-    <!-- Floating Action Button -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+    <!-- Source Selection (Camera / Gallery) -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:text="Создать"
-        app:icon="@android:drawable/ic_input_add" />
+        android:orientation="horizontal">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCamera"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/surface_elevated"
+            android:text="@string/camera_source"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_camera"
+            app:iconGravity="textStart"
+            app:iconTint="@color/accent_cyan"
+            app:strokeColor="@color/border_dark"
+            app:strokeWidth="1dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGallery"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/surface_elevated"
+            android:text="@string/gallery_source"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_photo"
+            app:iconGravity="textStart"
+            app:iconTint="@color/primary_light"
+            app:strokeColor="@color/border_dark"
+            app:strokeWidth="1dp" />
+    </LinearLayout>
+
+    <!-- Save Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSave"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/primary"
+        android:enabled="false"
+        android:text="@string/save_photo"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_save"
+        app:iconGravity="textStart" />
+
+</LinearLayout>
